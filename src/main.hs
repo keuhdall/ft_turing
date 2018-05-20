@@ -63,6 +63,7 @@ data Engine = Engine {
 formatTape tape = case tape of
   (s:ls) -> s ++ (formatTape ls)
   [] -> ""
+
 printStep engine t = do
   putStr $ "["++(formatTape (tape engine))++"]" ++ "\n"
   putStr $ "Debug step "++(show (step engine))++"\n"
@@ -86,18 +87,18 @@ apply t engine machine =
     Just (
 	Engine
 		((step engine) + 1)
-		(if (action t) == "RIGHT" then 1 else -1)
+		( (pos engine) + (if (action t) == "RIGHT" then (1) else -1) )
 		(to_state t)
 		(action t)
 		(replace (tape engine) (pos engine) (write t) )
 	)
 
 next engine machine = do
-  putStr "hello\n"
   let w = currentWord engine
   let s = state engine
+  --putStr $ "will try to find " ++ (w) ++ " in " ++ (show (transitions machine))
   let t = extractTransition machine s w
-  if (step engine) >= 5 then putStr("debug stop")
+  if (step engine) >= 30 then putStr("debug stop")
   else do
   printStep engine t
   case (apply t engine machine) of
