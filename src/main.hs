@@ -35,7 +35,11 @@ data Machine = Machine {
 instance FromJSON Machine
 instance ToJSON Machine
 
-valid machine = machine --TODO: check the machine is valid else return Nothing
+doCheck machine = Just machine --TODO: check the machine is valid else return Nothing
+
+valid m = case m of
+  Just machine -> doCheck machine
+  Nothing -> Nothing
 
 -- Tape
 
@@ -71,12 +75,10 @@ printStep engine t = do
 
 findTransition w ts = case ts of
   (t:nts) -> if (read t) == w then t else (findTransition w nts)
---[] ->
 
 extractTransition machine s w =
   case (Map.lookup s (transitions machine)) of
     Just ts -> findTransition w ts
---Nothing ->
 
 currentWord engine = (tape engine) !! (pos engine)
 
@@ -118,6 +120,6 @@ main = do
   let input = (args !! 1)
   putStr "parsing the json...\n"
   s <- fget (args !! 0)
-  case (decode s :: Maybe Machine) of
+  case valid (decode s :: Maybe Machine) of
       Just machine -> run machine input
       Nothing -> return (putStr "failed to open input\n")
