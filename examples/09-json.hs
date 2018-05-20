@@ -8,7 +8,13 @@ import GHC.Generics
 
 fget filename = B.readFile filename
 
-data People = People {firstName::String, lastName::String, age::Int, likesPizza::Bool} deriving (Generic, Show)
+data People = People {
+firstName::String,
+lastName::String,
+age::Int,
+likesPizza::Bool}
+deriving (Generic, Show)
+
 instance FromJSON People
 instance ToJSON People
 
