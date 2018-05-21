@@ -1,19 +1,22 @@
-module Logger (printHeader) where
+module Logger (printLine, printHeader) where
+    printLine :: IO ()
+    printLine = printLine' 0 where
+        printLine' :: Int -> IO ()
+        printLine' n =
+            if (n < 80) then do
+                putStr "*"
+                printLine' $ n + 1
+            else
+                putStr "\n"
+
+
     printHeader :: String -> IO ()
     printHeader name = do
-        printLine 0
+        printLine
         printEmptyLine 0
         printName name 0
         printEmptyLine 0
-        printLine 0 where
-
-        printLine :: Int -> IO ()
-        printLine n =
-            if (n < 80) then do
-                putStr "*"
-                printLine $ n + 1
-            else
-                putStr "\n"
+        printLine where
         
         printEmptyLine :: Int -> IO ()
         printEmptyLine n =
