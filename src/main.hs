@@ -41,6 +41,40 @@ valid m = case m of
   Just machine -> doCheck machine
   Nothing -> Nothing
 
+checkMachine :: Machine -> Maybe Machine
+checkMachine machine =
+    if (checkTransitions machine (alphabet machine)) then
+        Just machine
+    else
+        Nothing
+    where
+      checkActionTransitions :: Machine -> [Cond] -> Bool
+      checkActionTransitions m at = case at of
+          (hd:tl) ->
+              if (((read hd) `elem` (alphabet m)) &&
+                  ((to_state hd) `elem` (states m)) &&
+                  (((write hd) `elem` (alphabet m)) || (write hd) == (blank m)) &&
+                  ((action hd) == "RIGHT" || (action hd) == "LEFT")) then
+                      checkActionTransitions m tl
+              else
+                  False
+          []      -> True
+    
+      checkTransitions :: Machine -> [String] -> Bool
+      checkTransitions machine alphabet = case alphabet of
+          (hd:tl) ->
+              if ((hd `Map.member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) Map.! hd))) then
+                  checkTransitions machine tl
+              else
+                  False
+          []      -> True
+
+isValidMachine :: Maybe Machine -> Maybe Machine
+isValidMachine machine = case machine of
+    Just machine    -> checkMachine machine
+    Nothing         -> Nothing
+
+
 -- Tape
 
 replace' tape i pos w =
@@ -65,8 +99,8 @@ data Engine = Engine {
 } deriving (Show)
 
 formatTape tape = case tape of
-  (s:ls) -> s ++ (formatTape ls)
-  [] -> ""
+  (s:ls)  -> s ++ (formatTape ls)
+  []      -> ""
 
 printStep engine t = do
   putStr $ "["++(formatTape (tape engine))++"]" ++ "\n"
@@ -107,12 +141,13 @@ next engine machine = do
     Just engine' -> next engine' machine
     Nothing -> putStr("program finished")
 
+run :: Machine -> String -> IO ()
 run machine input = do
   let pos = 0 :: Int
   let engine = Engine 0 0 (initial machine) "RIGHT" (makeTape input)
   putStr "start\n"
   next engine machine
-  return (putStr "finish\n")
+  putStr "finish\n"
 
 -- main
 main = do
@@ -120,6 +155,6 @@ main = do
   let input = (args !! 1)
   putStr "parsing the json...\n"
   s <- fget (args !! 0)
-  case valid (decode s :: Maybe Machine) of
-      Just machine -> run machine input
-      Nothing -> return (putStr "failed to open input\n")
+  case isValidMachine (decode s :: Maybe Machine) of
+      Just machine  -> run machine input
+      Nothing       -> putStrLn "failed to open input"
