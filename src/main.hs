@@ -43,7 +43,7 @@ valid m = case m of
 
 checkMachine :: Machine -> Maybe Machine
 checkMachine machine =
-    if (checkTransitions machine (alphabet machine)) then
+    if (checkTransitions machine (states machine)) then
         Just machine
     else
         Nothing
@@ -61,9 +61,11 @@ checkMachine machine =
           []      -> True
     
       checkTransitions :: Machine -> [String] -> Bool
-      checkTransitions machine alphabet = case alphabet of
+      checkTransitions machine states = case states of
           (hd:tl) ->
-              if ((hd `member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) ! hd))) then
+              if (hd `elem` (finals machine)) then
+                  checkTransitions machine tl
+              else if ((hd `member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) ! hd))) then
                   checkTransitions machine tl
               else
                   False
