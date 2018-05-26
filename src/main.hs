@@ -100,24 +100,30 @@ data Engine = Engine {
 	tape::[String]
 } deriving (Show)
 
+formatTape :: [String] -> String
 formatTape tape = case tape of
   (s:ls)  -> s ++ (formatTape ls)
   []      -> ""
 
+printStep :: Engine -> Cond -> IO ()
 printStep engine t = do
   putStr $ "["++(formatTape (tape engine))++"]" ++ "\n"
   putStr $ "Debug step "++(show (step engine))++"\n"
   print engine
 
+findTransition :: String -> [Cond] -> Cond
 findTransition w ts = case ts of
   (t:nts) -> if (read t) == w then t else (findTransition w nts)
 
+extractTransition :: Machine -> String -> String -> Cond
 extractTransition machine s w =
   case (Data.Map.lookup s (transitions machine)) of
     Just ts -> findTransition w ts
 
+currentWord :: Engine -> String
 currentWord engine = (tape engine) !! (pos engine)
 
+apply :: Cond -> Engine -> Machine -> Maybe Engine
 apply t engine machine =
   if (to_state t) `elem` (finals machine) then
     Nothing
@@ -130,7 +136,7 @@ apply t engine machine =
 		(action t)
 		(replace (tape engine) (pos engine) (write t) )
 	)
-
+next :: Engine -> Machine -> IO ()
 next engine machine = do
   let w = currentWord engine
   let s = state engine
@@ -152,6 +158,7 @@ run machine input = do
   putStr "finish\n"
 
 -- main
+main :: IO ()
 main = do
   args <- getArgs
   let input = (args !! 1)
