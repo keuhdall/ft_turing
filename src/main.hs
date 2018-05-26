@@ -4,7 +4,7 @@
 
 import Prelude hiding (read)
 import System.Environment
-import qualified Data.Map as Map
+import Data.Map
 
 -- Json
 import Data.Aeson
@@ -30,7 +30,7 @@ data Machine = Machine {
   states::[String],
   initial::String,
   finals::[String],
-  transitions::Map.Map String [Cond]
+  transitions::Map String [Cond]
 } deriving (Generic, Show)
 instance FromJSON Machine
 instance ToJSON Machine
@@ -63,7 +63,7 @@ checkMachine machine =
       checkTransitions :: Machine -> [String] -> Bool
       checkTransitions machine alphabet = case alphabet of
           (hd:tl) ->
-              if ((hd `Map.member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) Map.! hd))) then
+              if ((hd `member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) ! hd))) then
                   checkTransitions machine tl
               else
                   False
@@ -111,7 +111,7 @@ findTransition w ts = case ts of
   (t:nts) -> if (read t) == w then t else (findTransition w nts)
 
 extractTransition machine s w =
-  case (Map.lookup s (transitions machine)) of
+  case (Data.Map.lookup s (transitions machine)) of
     Just ts -> findTransition w ts
 
 currentWord engine = (tape engine) !! (pos engine)
