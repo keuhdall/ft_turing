@@ -4,7 +4,7 @@
 
 import Prelude hiding (read)
 import System.Environment
-import qualified Data.Map as Map
+import Data.Map
 
 -- Json
 import Data.Aeson
@@ -30,7 +30,7 @@ data Machine = Machine {
   states::[String],
   initial::String,
   finals::[String],
-  transitions::Map.Map String [Cond]
+  transitions::Map String [Cond]
 } deriving (Generic, Show)
 instance FromJSON Machine
 instance ToJSON Machine
@@ -40,6 +40,42 @@ doCheck machine = Just machine --TODO: check the machine is valid else return No
 valid m = case m of
   Just machine -> doCheck machine
   Nothing -> Nothing
+
+checkMachine :: Machine -> Maybe Machine
+checkMachine machine =
+    if (checkTransitions machine (states machine)) then
+        Just machine
+    else
+        Nothing
+    where
+      checkActionTransitions :: Machine -> [Cond] -> Bool
+      checkActionTransitions m at = case at of
+          (hd:tl) ->
+              if (((read hd) `elem` (alphabet m)) &&
+                  ((to_state hd) `elem` (states m)) &&
+                  (((write hd) `elem` (alphabet m)) || (write hd) == (blank m)) &&
+                  ((action hd) == "RIGHT" || (action hd) == "LEFT")) then
+                      checkActionTransitions m tl
+              else
+                  False
+          []      -> True
+    
+      checkTransitions :: Machine -> [String] -> Bool
+      checkTransitions machine states = case states of
+          (hd:tl) ->
+              if (hd `elem` (finals machine)) then
+                  checkTransitions machine tl
+              else if ((hd `member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) ! hd))) then
+                  checkTransitions machine tl
+              else
+                  False
+          []      -> True
+
+isValidMachine :: Maybe Machine -> Maybe Machine
+isValidMachine machine = case machine of
+    Just machine    -> checkMachine machine
+    Nothing         -> Nothing
+
 
 -- Tape
 
@@ -64,24 +100,30 @@ data Engine = Engine {
 	tape::[String]
 } deriving (Show)
 
+formatTape :: [String] -> String
 formatTape tape = case tape of
-  (s:ls) -> s ++ (formatTape ls)
-  [] -> ""
+  (s:ls)  -> s ++ (formatTape ls)
+  []      -> ""
 
+printStep :: Engine -> Cond -> IO ()
 printStep engine t = do
   putStr $ "["++(formatTape (tape engine))++"]" ++ "\n"
   putStr $ "Debug step "++(show (step engine))++"\n"
   print engine
 
+findTransition :: String -> [Cond] -> Cond
 findTransition w ts = case ts of
   (t:nts) -> if (read t) == w then t else (findTransition w nts)
 
+extractTransition :: Machine -> String -> String -> Cond
 extractTransition machine s w =
-  case (Map.lookup s (transitions machine)) of
+  case (Data.Map.lookup s (transitions machine)) of
     Just ts -> findTransition w ts
 
+currentWord :: Engine -> String
 currentWord engine = (tape engine) !! (pos engine)
 
+apply :: Cond -> Engine -> Machine -> Maybe Engine
 apply t engine machine =
   if (to_state t) `elem` (finals machine) then
     Nothing
@@ -94,7 +136,7 @@ apply t engine machine =
 		(action t)
 		(replace (tape engine) (pos engine) (write t) )
 	)
-
+next :: Engine -> Machine -> IO ()
 next engine machine = do
   let w = currentWord engine
   let s = state engine
@@ -107,19 +149,21 @@ next engine machine = do
     Just engine' -> next engine' machine
     Nothing -> putStr("program finished")
 
+run :: Machine -> String -> IO ()
 run machine input = do
   let pos = 0 :: Int
   let engine = Engine 0 0 (initial machine) "RIGHT" (makeTape input)
   putStr "start\n"
   next engine machine
-  return (putStr "finish\n")
+  putStr "finish\n"
 
 -- main
+main :: IO ()
 main = do
   args <- getArgs
   let input = (args !! 1)
   putStr "parsing the json...\n"
   s <- fget (args !! 0)
-  case valid (decode s :: Maybe Machine) of
-      Just machine -> run machine input
-      Nothing -> return (putStr "failed to open input\n")
+  case isValidMachine (decode s :: Maybe Machine) of
+      Just machine  -> run machine input
+      Nothing       -> putStrLn "failed to open input"
