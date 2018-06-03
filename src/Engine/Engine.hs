@@ -59,6 +59,7 @@ module Engine.Engine (run) where
                 currentWord :: Engine -> Maybe String
                 currentWord engine = if (pos engine) < 0 then Nothing else Just ( (tape engine) !! (pos engine) )
     
+                -- Might be moved to Machine.Machine
                 extractTransition :: Machine -> String -> Maybe String -> Maybe ActionTransition
                 extractTransition machine s w =
                     case w of
