@@ -1,4 +1,4 @@
-module Checker.Checker (isValidMachine, isValidInput, canReachEnd) where
+module Checker.Checker (isValidMachine, isValidInput) where
     import Prelude hiding (read)
     import Data.Map
     import Machine.Data
@@ -11,13 +11,13 @@ module Checker.Checker (isValidMachine, isValidInput, canReachEnd) where
         Nothing         -> Nothing
         where
             canReachEnd :: Machine -> Bool
-            canReachEnd m = 
-                canReachEnd' m (toList (transitions m))                    
+            canReachEnd m =
+                canReachEnd' m (toList (transitions m))
                 where
                     canReachEnd' :: Machine -> [(String, [ActionTransition])] -> Bool
-                    canReachEnd' m transitionsList = case (transitionsList m) of
+                    canReachEnd' m transitionsList = case transitionsList of
                         (hd:tl) ->
-                            if (parseActionTransitionList (snd hd)) then
+                            if (parseActionTransitionList m (snd hd)) then
                                 True
                             else
                                 canReachEnd' m tl
@@ -26,7 +26,7 @@ module Checker.Checker (isValidMachine, isValidInput, canReachEnd) where
                     parseActionTransitionList :: Machine -> [ActionTransition] -> Bool
                     parseActionTransitionList m atList = case atList of
                         (hd:tl) ->
-                            if ((action hd) `member` (finals m)) then
+                            if ((action hd) `elem` (finals m)) then
                                 True
                             else
                                 parseActionTransitionList m tl
@@ -50,7 +50,7 @@ module Checker.Checker (isValidMachine, isValidInput, canReachEnd) where
                           else
                               False
                       []      -> True
-            
+
                   checkTransitions :: Machine -> [String] -> Bool
                   checkTransitions machine states = case states of
                       (hd:tl) ->
