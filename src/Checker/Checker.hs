@@ -26,7 +26,7 @@ module Checker.Checker (isValidMachine, isValidInput) where
                     parseActionTransitionList :: Machine -> [ActionTransition] -> Bool
                     parseActionTransitionList m atList = case atList of
                         (hd:tl) ->
-                            if ((action hd) `elem` (finals m)) then
+                            if ((to_state hd) `elem` (finals m)) then
                                 True
                             else
                                 parseActionTransitionList m tl
