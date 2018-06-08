@@ -26,8 +26,8 @@ module Engine.Engine (run) where
             case t of
                 Nothing -> putStrLn "error, leaving"
                 Just t -> do
-                if (step engine) >= 10 then putStrLn "debug stop"
-                else do
+                --if (step engine) >= 10 then putStrLn "debug stop"
+                --else do
                 printStep engine machine t
                 case (apply t engine machine) of
                     Just engine' -> next engine' machine
