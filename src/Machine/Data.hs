@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Machine.Data (ActionTransition(..), Machine(..)) where
-    import qualified Data.ByteString.Lazy as B    
+    import qualified Data.ByteString.Lazy as B
     import GHC.Generics
     import Data.Map
     import Data.Aeson
@@ -26,4 +26,3 @@ module Machine.Data (ActionTransition(..), Machine(..)) where
     } deriving (Generic, Show)
     instance FromJSON Machine
     instance ToJSON Machine
-      

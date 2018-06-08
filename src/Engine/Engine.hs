@@ -1,7 +1,7 @@
 module Engine.Engine (run) where
     import Prelude hiding (read)
     import Data.Map
-    import Logger.Logger    
+    import Logger.Logger
     import Machine.Data
     import Engine.Data
 
@@ -9,9 +9,8 @@ module Engine.Engine (run) where
     run machine input = do
       let pos = 0 :: Int
       let engine = Engine 0 0 (initial machine) "RIGHT" (makeTape input)
-      putStrLn "start"
+      printHeader machine
       next engine machine
-      putStrLn "finish"
       where
         makeTape :: String -> [String]
         makeTape s = case s of
@@ -29,7 +28,7 @@ module Engine.Engine (run) where
                 Just t -> do
                 if (step engine) >= 10 then putStrLn "debug stop"
                 else do
-                printStep engine t
+                printStep engine machine t
                 case (apply t engine machine) of
                     Just engine' -> next engine' machine
                     Nothing -> putStrLn "program finished"
@@ -47,7 +46,7 @@ module Engine.Engine (run) where
                                 (action t)
                                 (replace (tape engine) (pos engine) (write t) (blank machine))
                         )
-    
+
                 replace :: [String] -> Int -> String -> String -> [String]
                 replace tape pos w blank = replace' tape 0 pos w blank where
                     replace' :: [String] -> Int -> Int -> String -> String -> [String]
@@ -55,10 +54,10 @@ module Engine.Engine (run) where
                         case tape of
                             (c:s) -> (if i == pos then w else c):(replace' s (i+1) pos w blank)
                             [] -> if pos == i-1 then [blank] else []
-    
+
                 currentWord :: Engine -> Maybe String
                 currentWord engine = if (pos engine) < 0 then Nothing else Just ( (tape engine) !! (pos engine) )
-    
+
                 -- Might be moved to Machine.Machine
                 extractTransition :: Machine -> String -> Maybe String -> Maybe ActionTransition
                 extractTransition machine s w =
@@ -67,7 +66,7 @@ module Engine.Engine (run) where
                         Just w ->
                             case (Data.Map.lookup s (transitions machine)) of
                                 Just ts -> findTransition w ts
-                    where    
+                    where
                         findTransition :: String -> [ActionTransition] -> Maybe ActionTransition
                         findTransition w ts = case ts of
                             [] -> Nothing
