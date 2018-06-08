@@ -1,0 +1,114 @@
+{
+	"name" : "unary_add",
+	"alphabet": [ "0", "1", ".", "y", "n"],
+	"blank" : ".",
+	"states" : [ "in",
+			"1_right", "1_check", "1_write", "1_left", "1_left_fail",
+			"0_right", "0_check", "0_write", "0_left", "0_left_fail",
+			"success_right","success_check","success_0","success_1","success",
+			"fail_right","fail_check","fail_0","fail_1","fail",
+			"HALT" ],
+	"initial" : "in",
+	"finals" : [ "HALT" ],
+	"transitions" : {
+		"in":[
+			{"read" : "1", "to_state": "1_right", "write": ".", "action": "RIGHT"},
+			{"read" : "0", "to_state": "0_right", "write": ".", "action": "RIGHT"},
+			{"read" : ".", "to_state": "success_check", "write": ".", "action": "RIGHT"}
+		],
+
+		"success_right":[
+			{"read" : ".", "to_state": "success_check", "write": ".", "action": "RIGHT"}
+		],
+		"success_check":[
+			{"read" : "1", "to_state": "success_1", "write": ".", "action": "LEFT"},
+			{"read" : "0", "to_state": "success_0", "write": ".", "action": "LEFT"},
+			{"read" : ".", "to_state": "success", "write": ".", "action": "LEFT"}
+		],
+		"success_1":[
+			{"read" : ".", "to_state": "success_right", "write": "1", "action": "RIGHT"}
+		],
+		"success_0":[
+			{"read" : ".", "to_state": "success_right", "write": "0", "action": "RIGHT"}
+		],
+		"success":[
+			{"read" : ".", "to_state": "HALT", "write": "y", "action": "RIGHT"}
+		],
+
+
+
+		"fail_right":[
+			{"read" : "1", "to_state": "fail_right", "write": "1", "action": "RIGHT"},
+			{"read" : "0", "to_state": "fail_right", "write": "0", "action": "RIGHT"},
+			{"read" : ".", "to_state": "fail_check", "write": ".", "action": "RIGHT"}
+		],
+		"fail_check":[
+			{"read" : "1", "to_state": "fail_1", "write": ".", "action": "LEFT"},
+			{"read" : "0", "to_state": "fail_0", "write": ".", "action": "LEFT"},
+			{"read" : ".", "to_state": "fail", "write": ".", "action": "LEFT"}
+		],
+		"fail_1":[
+			{"read" : ".", "to_state": "fail_right", "write": "1", "action": "RIGHT"}
+		],
+		"fail_0":[
+			{"read" : ".", "to_state": "fail_right", "write": "0", "action": "RIGHT"}
+		],
+		"fail":[
+			{"read" : ".", "to_state": "HALT", "write": "n", "action": "RIGHT"}
+		],
+
+
+
+		"1_right":[
+			{"read" : "0", "to_state": "1_right", "write": "0", "action": "RIGHT"},
+			{"read" : "1", "to_state": "1_right", "write": "1", "action": "RIGHT"},
+			{"read" : ".", "to_state": "1_check", "write": ".", "action": "LEFT"}
+		],
+		"1_check":[
+			{"read" : "1", "to_state": "1_write", "write": "1", "action": "RIGHT"},
+			{"read" : "0", "to_state": "1_left_fail", "write": "0", "action": "LEFT"},
+			{"read" : ".", "to_state": "success_right", "write": "1", "action": "RIGHT"}
+		],
+		"1_write":[
+			{"read" : ".", "to_state": "1_write", "write": "1", "action": "LEFT"},
+			{"read" : "1", "to_state": "1_left", "write": ".", "action": "LEFT"}
+		],
+		"1_left":[
+			{"read" : "0", "to_state": "1_left", "write": "0", "action": "LEFT"},
+			{"read" : "1", "to_state": "1_left", "write": "1", "action": "LEFT"},
+			{"read" : ".", "to_state": "in", "write": "1", "action": "RIGHT"}
+		],
+		"1_left_fail":[
+			{"read" : "0", "to_state": "1_left_fail", "write": "0", "action": "LEFT"},
+			{"read" : "1", "to_state": "1_left_fail", "write": "1", "action": "LEFT"},
+			{"read" : ".", "to_state": "fail_right", "write": "1", "action": "RIGHT"}
+		],
+
+
+
+		"0_right":[
+			{"read" : "0", "to_state": "0_right", "write": "0", "action": "RIGHT"},
+			{"read" : "1", "to_state": "0_right", "write": "1", "action": "RIGHT"},
+			{"read" : ".", "to_state": "0_check", "write": ".", "action": "LEFT"}
+		],
+		"0_check":[
+			{"read" : "0", "to_state": "0_write", "write": "0", "action": "RIGHT"},
+			{"read" : "1", "to_state": "0_left_fail", "write": "1", "action": "LEFT"},
+			{"read" : ".", "to_state": "success_right", "write": "0", "action": "RIGHT"}
+		],
+		"0_write":[
+			{"read" : ".", "to_state": "0_write", "write": "0", "action": "LEFT"},
+			{"read" : "0", "to_state": "0_left", "write": ".", "action": "LEFT"}
+		],
+		"0_left":[
+			{"read" : "0", "to_state": "0_left", "write": "0", "action": "LEFT"},
+			{"read" : "1", "to_state": "0_left", "write": "1", "action": "LEFT"},
+			{"read" : ".", "to_state": "in", "write": "0", "action": "RIGHT"}
+		],
+		"0_left_fail":[
+			{"read" : "0", "to_state": "0_left_fail", "write": "0", "action": "LEFT"},
+			{"read" : "1", "to_state": "0_left_fail", "write": "1", "action": "LEFT"},
+			{"read" : ".", "to_state": "fail_right", "write": "0", "action": "RIGHT"}
+		]
+}
+}

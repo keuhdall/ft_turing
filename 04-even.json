@@ -1,0 +1,22 @@
+{
+	"name" : "unary_add",
+	"alphabet": [ "0", ".", "y", "n"],
+	"blank" : ".",
+	"states" : [ "in", "even", "odd", "HALT" ],
+	"initial" : "in",
+	"finals" : [ "HALT" ],
+	"transitions" : {
+		"in":[
+			{"read" : "0", "to_state": "even", "write": "0", "action": "RIGHT"},
+			{"read" : ".", "to_state": "HALT", "write": "n", "action": "RIGHT"}
+		],
+		"even":[
+			{"read" : "0", "to_state": "odd", "write": "0", "action": "RIGHT"},
+			{"read" : ".", "to_state": "HALT", "write": "n", "action": "RIGHT"}
+		],
+		"odd":[
+			{"read" : "0", "to_state": "even", "write": "0", "action": "RIGHT"},
+			{"read" : ".", "to_state": "HALT", "write": "y", "action": "RIGHT"}
+		]
+	}
+}

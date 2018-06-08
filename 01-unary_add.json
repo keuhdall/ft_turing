@@ -1,0 +1,24 @@
+{
+	"name" : "unary_add",
+	"alphabet": [ "1", ".", "+"],
+	"blank" : ".",
+	"states" : [ "skip", "swap_init", "swap_left", "swap_right", "HALT" ],
+	"initial" : "skip",
+	"finals" : [ "HALT" ],
+	"transitions" : {
+		"skip":[
+			{ "read" : "1", "to_state": "skip", "write": "1", "action": "RIGHT"},
+			{ "read" : "+", "to_state": "swap_init", "write": ".", "action": "RIGHT"}
+		],
+		"swap_init":[
+			{ "read" : "1", "to_state": "swap_left", "write": "1", "action": "LEFT"},
+			{ "read" : ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
+		],
+		"swap_left":[
+			{ "read" : ".", "to_state": "swap_right", "write": "1", "action": "RIGHT"}
+		],
+		"swap_right":[
+			{ "read" : "1", "to_state": "swap_init", "write": ".", "action": "RIGHT"}
+		]
+	}
+}
