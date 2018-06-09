@@ -66,12 +66,12 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
 
     printStep :: Engine -> Machine -> ActionTransition -> IO ()
     printStep engine machine t = do
-        putStrLn $ (trail (show (step engine)) " " 3) ++ "["++(formatTape (tape engine) (pos engine) 0 30 (blank machine))++"]" ++ " (\'" ++ (read t) ++ "\', "++ (state engine) ++") -> ( \'" ++ (write t) ++ "\', "++ (to_state t) ++ ", "++ (action t) ++")"
+        putStrLn $ (trail (show (step engine)) " " 3) ++ "["++(formatTape (tape engine) (pos engine) 0 30 (blank machine) (initpos engine))++"]" ++ " (\'" ++ (read t) ++ "\', "++ (state engine) ++") -> ( \'" ++ (write t) ++ "\', "++ (to_state t) ++ ", "++ (action t) ++")"
         where
-            formatTape :: [String] -> Int -> Int -> Int -> String -> String
-            formatTape tape pos i n blank = case tape of
-                (s:ls)  -> (if i == pos then "\x1b[1;32m\x1b[41m" ++ s ++ "\x1b[0m" else s) ++ (formatTape ls pos (i+1) n blank)
-                []      -> if i < n then blank ++ (formatTape tape pos (i + 1) n blank) else ""
+            formatTape :: [String] -> Int -> Int -> Int -> String -> Int -> String
+            formatTape tape pos i n blank initpos = case tape of
+                (s:ls)  -> (if i == pos then "\x1b[1;32m\x1b[41m" ++ s ++ "\x1b[0m" else if ((i == initpos) && (not (i == 0))) then "\x1b[44m" ++ s ++ "\x1b[0m" else s) ++ (formatTape ls pos (i+1) n blank initpos)
+                []      -> if i < n then blank ++ (formatTape tape pos (i + 1) n blank initpos) else ""
 
     printUsage :: IO ()
     printUsage = do

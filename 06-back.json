@@ -1,0 +1,32 @@
+{
+	"name" : "back",
+	"alphabet": [ "1", "."],
+	"blank" : ".",
+	"states" : [ "in", "back1", "back2", "back3", "back4", "back5", "finish", "HALT" ],
+	"initial" : "in",
+	"finals" : [ "HALT" ],
+	"transitions" : {
+		"in":[
+			{ "read" : "1", "to_state": "back1", "write": "1", "action": "LEFT"}
+		],
+		"back1":[
+			{ "read" : ".", "to_state": "back2", "write": "1", "action": "LEFT"}
+		],
+		"back2":[
+			{ "read" : ".", "to_state": "back3", "write": "1", "action": "LEFT"}
+		],
+		"back3":[
+			{ "read" : ".", "to_state": "back4", "write": "1", "action": "LEFT"}
+		],
+		"back4":[
+			{ "read" : ".", "to_state": "back5", "write": "1", "action": "LEFT"}
+		],
+		"back5":[
+			{ "read" : ".", "to_state": "finish", "write": "1", "action": "RIGHT"}
+		],
+		"finish":[
+			{ "read" : "1", "to_state": "finish", "write": "1", "action": "RIGHT"},
+			{ "read" : ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
+		]
+	}
+}
