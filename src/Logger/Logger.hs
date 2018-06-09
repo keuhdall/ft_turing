@@ -1,5 +1,6 @@
-module Logger.Logger (printLine, printHeader, printStep) where
+module Logger.Logger (printLine, printHeader, printStep, printUsage) where
     import Prelude hiding (read,write)
+    import System.Environment
     import Machine.Data
     import Engine.Data
 
@@ -71,3 +72,16 @@ module Logger.Logger (printLine, printHeader, printStep) where
             formatTape tape pos i n blank = case tape of
                 (s:ls)  -> (if i == pos then "\x1b[1;32m\x1b[41m" ++ s ++ "\x1b[0m" else s) ++ (formatTape ls pos (i+1) n blank)
                 []      -> if i < n then blank ++ (formatTape tape pos (i + 1) n blank) else ""
+
+    printUsage :: IO ()
+    printUsage = do
+        name <- getProgName
+        putStrLn $ "usage: " ++ (show name) ++ " [-h] jsonfile input"
+        putStrLn $ ""
+        putStrLn $ "positional arguments:"
+        putStrLn $ "  jsonfile              json description of the machine"
+        putStrLn $ ""
+        putStrLn $ "  input                 input of the machine"
+        putStrLn $ ""
+        putStrLn $ "optional arguments:"
+        putStrLn $ "  -h, --help            show this help message and exit"
