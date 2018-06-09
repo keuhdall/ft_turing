@@ -32,7 +32,11 @@ main = do
   if not ((length args) == 2) then
     putStrLn "missing parameters"
   else do
+  putStrLn $ "args:" ++ (show (length args))
   let input = (args !! 1)
+  if (length input) == 0 then
+    putStrLn $ "empty input"
+  else do
   s <- fget (args !! 0)
   case isValidMachine (decode s :: Maybe Machine) of
       Nothing       -> putStrLn "machine invalid"
