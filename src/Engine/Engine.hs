@@ -21,13 +21,10 @@ module Engine.Engine (run) where
         next engine machine = do
             let w = currentWord engine
             let s = state engine
-            --putStrLn $ "will try to find " ++ (w) ++ " in " ++ (show (transitions machine))
             let t = extractTransition machine s w
             case t of
                 Nothing -> putStrLn "error, leaving"
                 Just t -> do
-                --if (step engine) >= 10 then putStrLn "debug stop"
-                --else do
                 printStep engine machine t
                 case (apply t engine machine) of
                     Just engine' -> next engine' machine
