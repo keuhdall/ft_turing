@@ -185,7 +185,7 @@
 			{ "read" : "&", "to_state": "resetmaster_all", "write": "=", "action": "LEFT"},
 			{ "read" : "%", "to_state": "resetmaster_all", "write": "(", "action": "LEFT"},
 			{ "read" : "!", "to_state": "resetmaster_all", "write": "(", "action": "LEFT"},
-			{ "read" : "S", "to_state": "continue", "write": "(", "action": "LEFT"},
+			{ "read" : "S", "to_state": "continue", "write": "S", "action": "LEFT"},
 			{ "read" : "ANY", "to_state": "resetmaster_all", "write": "ANY", "action": "LEFT"}
 		],
 		"continue":[

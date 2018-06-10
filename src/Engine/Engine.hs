@@ -22,7 +22,7 @@ module Engine.Engine (run) where
             let w = currentWord engine
             let s = state engine
             let t = extractTransition machine s w
-            if (step engine) >= 600 then putStrLn "stop" else do
+            --if (step engine) >= 900 then putStrLn "stop" else do
             case t of
                 Nothing -> putStrLn "error, leaving"
                 Just t -> do
