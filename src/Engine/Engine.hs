@@ -42,7 +42,7 @@ module Engine.Engine (run) where
                                 ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then (initpos engine) + 1 else (initpos engine) )
                                 (to_state t)
                                 (action t)
-                                (replace (tape engine) (pos engine) (write t) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
+                                (replace (tape engine) (pos engine) (if (write t) == "ANY" then (read t) else (write t)) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
                         )
 
                 replace :: [String] -> Int -> String -> String -> Int -> [String]
@@ -63,9 +63,12 @@ module Engine.Engine (run) where
                         Nothing -> Nothing
                         Just w ->
                             case (Data.Map.lookup s (transitions machine)) of
-                                Just ts -> findTransition w ts
+                                Just ts -> findTransition w ts 0 (-1) ts
                     where
-                        findTransition :: String -> [ActionTransition] -> Maybe ActionTransition
-                        findTransition w ts = case ts of
-                            [] -> Nothing
-                            (t:nts) -> if (read t) == w then Just t else (findTransition w nts)
+                        findTransition :: String -> [ActionTransition] -> Int -> Int -> [ActionTransition] -> Maybe ActionTransition
+                        findTransition w ts i posAny x = case ts of
+                            [] -> if (posAny == (-1)) then Nothing else Just ( anyTransition w (x !! posAny) )
+                            (t:nts) -> if (read t) == w then Just t else (findTransition w nts (i+1) (if ( (posAny == -1) && ((read t) == "ANY") ) then i else posAny) x )
+
+                anyTransition :: String -> ActionTransition -> ActionTransition
+                anyTransition w t = ActionTransition w (to_state t) (write t) (action t)

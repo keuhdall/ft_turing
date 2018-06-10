@@ -1,0 +1,14 @@
+{
+	"name" : "clear",
+	"alphabet": [ "a", "b", "c", "."],
+	"blank" : ".",
+	"states" : [ "go", "HALT" ],
+	"initial" : "go",
+	"finals" : [ "HALT" ],
+	"transitions" : {
+		"go":[
+			{"read" : "ANY", "to_state": "go", "write": ".", "action": "RIGHT"},
+			{"read" : ".", "to_state": "HALT", "write": ".", "action": "RIGHT"}
+		]
+	}
+}

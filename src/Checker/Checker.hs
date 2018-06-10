@@ -39,9 +39,9 @@ module Checker.Checker (isValidMachine, isValidInput) where
                   checkActionTransitions :: Machine -> [ActionTransition] -> Bool
                   checkActionTransitions m at = case at of
                       (hd:tl) ->
-                          if (((read hd) `elem` (alphabet m)) &&
+                          if ( ( ((read hd) `elem` (alphabet m)) || (read hd) == "ANY" ) &&
                               ((to_state hd) `elem` (states m)) &&
-                              (((write hd) `elem` (alphabet m)) || (write hd) == (blank m)) &&
+                              (((write hd) `elem` (alphabet m)) || (write hd) == "ANY" || (write hd) == (blank m)) &&
                               ((action hd) == "RIGHT" || (action hd) == "LEFT")) then
                                   checkActionTransitions m tl
                           else
