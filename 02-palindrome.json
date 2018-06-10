@@ -38,8 +38,7 @@
 
 
 		"fail_right":[
-			{"read" : "1", "to_state": "fail_right", "write": "1", "action": "RIGHT"},
-			{"read" : "0", "to_state": "fail_right", "write": "0", "action": "RIGHT"},
+			{"read" : "ANY", "to_state": "fail_right", "write": "ANY", "action": "RIGHT"},
 			{"read" : ".", "to_state": "fail_check", "write": ".", "action": "RIGHT"}
 		],
 		"fail_check":[
@@ -60,8 +59,7 @@
 
 
 		"1_right":[
-			{"read" : "0", "to_state": "1_right", "write": "0", "action": "RIGHT"},
-			{"read" : "1", "to_state": "1_right", "write": "1", "action": "RIGHT"},
+			{"read" : "ANY", "to_state": "1_right", "write": "ANY", "action": "RIGHT"},
 			{"read" : ".", "to_state": "1_check", "write": ".", "action": "LEFT"}
 		],
 		"1_check":[

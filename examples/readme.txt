@@ -4,4 +4,4 @@ for install aeson package:
 
 brew install cabal-install
 cabal update
-cabal install eason
+cabal install aeson
