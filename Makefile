@@ -17,7 +17,7 @@ SRC_PATH=./src
 all: $(NAME)
 
 $(NAME):
-	@ghc --make -i:src src/main.hs -o $(NAME)
+	@ghc -O --make -i:src src/main.hs -o $(NAME)
 
 clean:
 	@find . -type f -name "*.o" -delete
