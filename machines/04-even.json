@@ -1,5 +1,5 @@
 {
-	"name" : "unary_add",
+	"name" : "even",
 	"alphabet": [ "0", ".", "y", "n"],
 	"blank" : ".",
 	"states" : [ "in", "even", "odd", "HALT" ],
