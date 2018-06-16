@@ -19,7 +19,6 @@ main = do
   if not ((length args) == 2) then
     putStrLn "missing parameters"
   else do
-  putStrLn $ "args:" ++ (show (length args))
   let input = (args !! 1)
   if (length input) == 0 then
     putStrLn $ "empty input"
