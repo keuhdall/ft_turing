@@ -46,11 +46,12 @@ Run `./ft_turing machines/03-0n1n.json` with an input of type : *0's then 1's*
 
 ---
 
-## Machine 04 : Even
+## Machine 04 : 0^2n
 #### Description :
-This machine checks if the given has an even number of 0's
+This machine checks if the given input has a number of 0's that is a power of 2/
 #### How to use it ?
 Run `./ft_turing machines/04-even.json` with an input of type : *0's*
+> We do not restore the input at the end of the machine here.
 #### Examples
 - `./ft_turing machines/04-even.json 0000` will output `0000y`.
 - `./ft_turing machines/04-even.json 00000` will output `00000n`.
@@ -59,8 +60,19 @@ Run `./ft_turing machines/04-even.json` with an input of type : *0's*
 
 ## Machine 05 : Turingception
 #### Description :
-This machines executes another Turing Machine as input
+This machines executes another Turing Machine as input.
 #### How to use it ?
 Run `./ft_turing machines/05-turingception.json` with an input of type :
 #### Example
 - `./ft_turing machines/05-turingception.json (?_>) A:(1,+,.), S: {(.=.,x,>), (1=1,x,>), (+=.,xx,>), (V=.,H,<)] [ (1=+,xx,<), (.=1,x,>),(V=.,H,<) ] #1+1V..` will output `11`.
+
+--
+
+## Machine 08 : Even
+#### Description :
+This machine checks if the given input has an even number of 0's.
+#### How to use it ?
+Run `./ft_turing machines/04-even.json` with an input of type : *0's*
+#### Examples
+- `./ft_turing machines/04-even.json 0000` will output `0000y`.
+- `./ft_turing machines/04-even.json 00000` will output `00000n`.
