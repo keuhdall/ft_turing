@@ -1,0 +1,39 @@
+{
+    "name" : "0^2n",
+    "alphabet": [ "0", ".", "y", "n", "S", "A", "X"],
+    "blank" : ".",
+    "states" : [ "in", "start_s", "begin","back_to_a","decal_a","find_match","find_match_end", "HALT" ],
+    "initial" : "in",
+    "finals" : [ "HALT" ],
+    "transitions" : {
+        "in":[
+            {"read" : "0", "to_state": "start_s", "write": "S", "action": "RIGHT"}
+        ],
+        "start_s":[
+            {"read" : ".", "to_state": "HALT", "write": "y", "action": "RIGHT"},
+            {"read" : "0", "to_state": "begin", "write": "A", "action": "RIGHT"}
+        ],
+        "begin":[
+            {"read" : ".", "to_state": "HALT", "write": "y", "action": "RIGHT"},
+            {"read" : "0", "to_state": "back_to_a", "write": "X", "action": "LEFT"}
+        ],
+        "back_to_a":[
+            {"read" : "X", "to_state": "back_to_a", "write": "X", "action": "LEFT"},
+            {"read" : "A", "to_state": "decal_a", "write": "X", "action": "LEFT"}
+        ],
+        "decal_a":[
+            {"read" : "X", "to_state": "find_match", "write": "A", "action": "RIGHT"},
+            {"read" : "S", "to_state": "find_match_end", "write": "S", "action": "RIGHT"}
+        ],
+        "find_match":[
+            {"read" : "X", "to_state": "find_match", "write": "X", "action": "RIGHT"},
+            {"read" : "0", "to_state": "back_to_a", "write": "X", "action": "LEFT"},
+            {"read" : ".", "to_state": "HALT", "write": "n", "action": "LEFT"}
+        ],
+        "find_match_end":[
+            {"read" : "X", "to_state": "find_match_end", "write": "X", "action": "RIGHT"},
+            {"read" : "0", "to_state": "begin", "write": "A", "action": "RIGHT"},
+            {"read" : ".", "to_state": "HALT", "write": "n", "action": "LEFT"}
+        ]
+    }
+}
