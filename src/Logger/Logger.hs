@@ -5,17 +5,18 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
     import Engine.Data
 
     trail :: String -> String -> Int -> String
-    trail s c i = if (length s) < i then trail (s ++ c) c i else s
+    trail s c i
+        | ((length s) < i)  = trail (s ++ c) c i
+        | otherwise         = s
 
     printLine :: IO ()
     printLine = printLine' 0 where
         printLine' :: Int -> IO ()
-        printLine' n =
-            if (n < 80) then do
+        printLine' n
+            | (n < 80)  = do
                 putStr "*"
                 printLine' $ n + 1
-            else
-                putStr "\n"
+            | otherwise = putStr "\n"
 
     getList' :: [String] -> String
     getList' l = case l of
@@ -40,15 +41,15 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
         printLine
         where
             printEmptyLine :: Int -> IO ()
-            printEmptyLine n =
-                if (n < 80) then do
-                    if (n == 0 || n == 79) then
-                        putStr "*"
-                    else
-                        putStr " "
-                    printEmptyLine $ n + 1
-                else
-                    putStr "\n"
+            printEmptyLine n
+                | (n == 0 || n == 79)   = printString "*" n
+                | (n < 80)  = printString " " n
+                | otherwise = putStr "\n"
+                where
+                    printString :: String -> Int -> IO ()
+                    printString s n = do
+                        putStr s
+                        printEmptyLine $ n + 1
 
             printName :: String -> Int -> IO ()
             printName name n =
