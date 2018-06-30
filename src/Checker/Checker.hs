@@ -60,8 +60,9 @@ module Checker.Checker (isValidMachine, isValidInput) where
                       []      -> (Just machine, "OK")
 
     isValidInput :: String -> [String] -> String -> Maybe String
-    isValidInput input alphabet blank =
-        if isValidInput' input alphabet blank then Just input else Nothing
+    isValidInput input alphabet blank
+        | isValidInput' input alphabet blank    = Just input
+        | otherwise                             = Nothing
         where
             isValidInput' :: String -> [String] -> String -> Bool
             isValidInput' input alphabet blank = case input of
@@ -69,5 +70,6 @@ module Checker.Checker (isValidMachine, isValidInput) where
                 (c:s) -> if not (isValidWord [c] alphabet blank) then False else (isValidInput' s alphabet blank)
 
             isValidWord :: String -> [String] -> String -> Bool
-            isValidWord w alphabet blank =
-                if w == blank then False else w `elem` alphabet
+            isValidWord w alphabet blank
+                | (w == blank)  = False
+                | otherwise     = w `elem` alphabet

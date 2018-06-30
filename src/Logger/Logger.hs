@@ -18,14 +18,13 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
                 printLine' $ n + 1
             | otherwise = putStr "\n"
 
-    getList' :: [String] -> String
-    getList' l = case l of
-        (s:[]) -> s
-        (s:l') -> s ++ ", " ++ (getList' l')
-        [] -> ""
-
     getList :: [String] -> String
-    getList l = "[ " ++ (getList' l) ++ " ]"
+    getList l = "[ " ++ (getList' l) ++ " ]" where
+        getList' :: [String] -> String
+        getList' l = case l of
+            (s:[])  -> s
+            (s:l')  -> s ++ ", " ++ (getList' l')
+            []      -> ""
 
     printHeader :: Machine -> IO ()
     printHeader machine = do

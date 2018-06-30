@@ -32,22 +32,23 @@ module Engine.Engine (run) where
                     Nothing -> putStrLn "program finished"
             where
                 apply :: ActionTransition -> Engine -> Machine -> Maybe Engine
-                apply t engine machine =
-                    if ((to_state t) `elem` (finals machine)) then
-                        Nothing
-                    else
-                        Just (
-                            Engine
-                                ((step engine) + 1)
-                                ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then 0 else x )
-                                ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then (initpos engine) + 1 else (initpos engine) )
-                                (to_state t)
-                                (action t)
-                                (replace (tape engine) (pos engine) (if (write t) == "ANY" then (read t) else (write t)) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
-                        )
+                apply t engine machine
+                    | ((to_state t) `elem` (finals machine)) = Nothing
+                    | otherwise = Just (
+                        Engine
+                            ((step engine) + 1)
+                            ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then 0 else x )
+                            ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then (initpos engine) + 1 else (initpos engine) )
+                            (to_state t)
+                            (action t)
+                            (replace (tape engine) (pos engine) (if (write t) == "ANY" then (read t) else (write t)) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
+                    )
 
                 replace :: [String] -> Int -> String -> String -> Int -> [String]
-                replace tape pos w blank npos = replace' (if npos < 0 then blank:tape else tape) 0 (if npos < 0 then pos + 1 else pos) w blank where
+                replace tape pos w blank npos
+                    | (npos < 0)    = replace' (blank:tape) 0   (pos + 1)   w blank
+                    | otherwise     = replace' tape         0   pos         w blank
+                    where
                     replace' :: [String] -> Int -> Int -> String -> String -> [String]
                     replace' tape i pos w blank =
                         case tape of
@@ -65,11 +66,11 @@ module Engine.Engine (run) where
                         Just w ->
                             case (Data.Map.lookup s (transitions machine)) of
                                 Just ts -> findTransition w ts 0 (-1) ts
+                                Nothing -> Nothing
                     where
                         findTransition :: String -> [ActionTransition] -> Int -> Int -> [ActionTransition] -> Maybe ActionTransition
                         findTransition w ts i posAny x = case ts of
-                            [] -> if (posAny == (-1)) then Nothing else Just ( anyTransition w (x !! posAny) )
                             (t:nts) -> if (read t) == w then Just t else (findTransition w nts (i+1) (if ( (posAny == -1) && ((read t) == "ANY") ) then i else posAny) x )
-
+                            []      -> if (posAny == (-1)) then Nothing else Just ( anyTransition w (x !! posAny) ) where
                 anyTransition :: String -> ActionTransition -> ActionTransition
                 anyTransition w t = ActionTransition w (to_state t) (write t) (action t)
