@@ -9,14 +9,15 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
         | ((length s) < i)  = trail (s ++ c) c i
         | otherwise         = s
 
+    printStrLine :: String -> Int -> IO ()
+    printStrLine s n
+        | (n > 0)   = do
+            putStr s
+            printStrLine s $ n - 1
+        | otherwise = putStr "\n"
+
     printLine :: IO ()
-    printLine = printLine' 0 where
-        printLine' :: Int -> IO ()
-        printLine' n
-            | (n < 80)  = do
-                putStr "*"
-                printLine' $ n + 1
-            | otherwise = putStr "\n"
+    printLine = printStrLine "*" 80
 
     getList :: [String] -> String
     getList l = "[ " ++ (getList' l) ++ " ]" where
@@ -51,18 +52,17 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
                         printEmptyLine $ n + 1
 
             printName :: String -> Int -> IO ()
-            printName name n =
-                if (n == ((80 - length name) `quot` 2)) then do
+            printName name n
+                | (n == ((80 - length name) `quot` 2)) = do
                     putStr name
                     printName name $ n + 1
-                else if (n < 80) then do
-                    if (n == 0 || n == (80 - length name)) then
-                        putStr "*"
-                    else
-                        putStr " "
+                | (n == 0 || n == (80 - length name)) = do
+                    putStr "*"
                     printName name $ n + 1
-                else
-                    putStr "\n"
+                | (n < 80) = do
+                    putStr " "
+                    printName name $ n + 1
+                | otherwise = putStr "\n"
 
     printStep :: Engine -> Machine -> ActionTransition -> IO ()
     printStep engine machine t = do
