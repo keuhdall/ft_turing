@@ -16,21 +16,23 @@ module Checker.Checker (isValidMachine, isValidInput) where
                 where
                     canReachEnd' :: Machine -> [(String, [ActionTransition])] -> (Maybe Machine, String)
                     canReachEnd' m transitionsList = case transitionsList of
-                        (hd:tl) ->
-                            if (parseActionTransitionList m (snd hd)) then
-                                (checkMachine m)
-                            else
-                                canReachEnd' m tl
+                        (hd:tl) -> canReachEnd'' m hd tl
                         []      -> (Nothing, "can\'t reach end!")
+                        where
+                            canReachEnd'' :: Machine -> (String, [ActionTransition]) -> [(String, [ActionTransition])] -> (Maybe Machine, String)
+                            canReachEnd'' m hd tl
+                                | (parseActionTransitionList m (snd hd)) = (checkMachine m)
+                                | otherwise = canReachEnd' m tl
 
                     parseActionTransitionList :: Machine -> [ActionTransition] -> Bool
                     parseActionTransitionList m atList = case atList of
-                        (hd:tl) ->
-                            if ((to_state hd) `elem` (finals m)) then
-                                True
-                            else
-                                parseActionTransitionList m tl
+                        (hd:tl) -> parseActionTransitionList' m hd tl
                         []      -> False
+                        where
+                            parseActionTransitionList' :: Machine -> ActionTransition -> [ActionTransition] -> Bool
+                            parseActionTransitionList' m hd tl
+                                | ((to_state hd) `elem` (finals m)) = True
+                                | otherwise = parseActionTransitionList m tl
 
             checkMachine :: Machine -> (Maybe Machine, String)
             checkMachine machine =
@@ -49,15 +51,15 @@ module Checker.Checker (isValidMachine, isValidInput) where
                       []      -> True
 
                   checkTransitions :: Machine -> [String] -> (Maybe Machine, String)
-                  checkTransitions machine states = case states of
-                      (hd:tl) ->
-                          if (hd `elem` (finals machine)) then
-                              checkTransitions machine tl
-                          else if ((hd `member` (transitions machine)) && (checkActionTransitions machine ((transitions machine) ! hd))) then
-                              checkTransitions machine tl
-                          else
-                              (Nothing, "error at " ++ (show hd))
-                      []      -> (Just machine, "OK")
+                  checkTransitions m states = case states of
+                      (hd:tl) -> checkTransitions' m hd tl                              
+                      []      -> (Just m, "OK")
+                      where
+                        checkTransitions' :: Machine -> String -> [String] -> (Maybe Machine, String)
+                        checkTransitions' m hd tl
+                            | (hd `elem` (finals m)) = checkTransitions m tl
+                            | ((hd `member` (transitions m)) && (checkActionTransitions m ((transitions m) ! hd))) = checkTransitions m tl
+                            | otherwise = (Nothing, "error at " ++ (show hd))
 
     isValidInput :: String -> [String] -> String -> Maybe String
     isValidInput input alphabet blank
