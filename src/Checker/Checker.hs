@@ -40,15 +40,16 @@ module Checker.Checker (isValidMachine, isValidInput) where
                 where
                   checkActionTransitions :: Machine -> [ActionTransition] -> Bool
                   checkActionTransitions m at = case at of
-                      (hd:tl) ->
-                          if ( ( ((read hd) `elem` (alphabet m)) || (read hd) == "ANY" ) &&
-                              ((to_state hd) `elem` (states m)) &&
-                              (((write hd) `elem` (alphabet m)) || (write hd) == "ANY" || (write hd) == (blank m)) &&
-                              ((action hd) == "RIGHT" || (action hd) == "LEFT")) then
-                                  checkActionTransitions m tl
-                          else
-                              False
+                      (hd:tl) -> checkActionTransitions' m hd tl
                       []      -> True
+                      where
+                        checkActionTransitions' :: Machine -> ActionTransition -> [ActionTransition] -> Bool
+                        checkActionTransitions' m hd tl
+                            | ((((read      hd)     `elem`  (alphabet   m))   || (read  hd) == "ANY")                             &&
+                                ((to_state  hd)     `elem`  (states     m))                                                       &&
+                                ((write     hd)     `elem`  (alphabet   m)    || (write hd) == "ANY" || (write hd) == (blank m))  &&
+                                ((action    hd) == "RIGHT" || (action hd) == "LEFT")) = checkActionTransitions m tl
+                            | otherwise = False
 
                   checkTransitions :: Machine -> [String] -> (Maybe Machine, String)
                   checkTransitions m states = case states of
