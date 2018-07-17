@@ -6,6 +6,7 @@
 This machine does unary substractions (111 - 11 = 1).
 #### How to use it ?
 Run `./ft_turing machines/00-unary_sub.json` with an input of type : *initial number one 1's* **-** *number of 1's to substract* **=**
+> Please note that any negative result will end up in having an infinite loop.
 #### Example
 `./ft_turing machines/00-unary_sub.json 11111-11=`  will output `111`.
 
