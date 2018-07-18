@@ -67,7 +67,7 @@ Run `./ft_turing machines/05-turingception.json` with an input of type :
 #### Example
 - `./ft_turing machines/05-turingception.json (?_>) A:(1,+,.), S: {(.=.,x,>), (1=1,x,>), (+=.,xx,>), (V=.,H,<)] [ (1=+,xx,<), (.=1,x,>),(V=.,H,<) ] #1+1V..` will output `11`.
 
---
+---
 
 ## Machine 06 : Back
 #### Description :
@@ -77,7 +77,7 @@ Run `./ft_turing machines/06-back.json` with an input on type *1's*
 #### Example
 - `./ft_turing machines/06-back.json 1` will output `111111`
 
---
+---
 
 ## Machine 07 : Example Any
 #### Description :
@@ -88,7 +88,8 @@ In this example, it will simply erase the input.
 Run `./ft_turing machines/07-example-any.json` with an input on type *a's and b's and c's*
 #### Example
 - `./ft_turing machines/06-back.json aaabbbcccabc` will output `............`
---
+
+---
 
 ## Machine 08 : Even
 #### Description :
