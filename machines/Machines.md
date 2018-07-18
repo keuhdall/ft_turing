@@ -69,6 +69,27 @@ Run `./ft_turing machines/05-turingception.json` with an input of type :
 
 --
 
+## Machine 06 : Back
+#### Description :
+This machine has no real purpose and is just an example that prooves the head can go on left as well as right
+#### How to use it ?
+Run `./ft_turing machines/06-back.json` with an input on type *1's*
+#### Example
+- `./ft_turing machines/06-back.json 1` will output `111111`
+
+--
+
+## Machine 07 : Example Any
+#### Description :
+This machine does nothing and just like Machine 06, it is here as example.
+It shows how to use a "syntaxic sugar" we added to the machine : `ANY` means that the actionTransition will be triggered for any character read, unless it has been overridden in an other actionTransition afterwards.
+In this example, it will simply erase the input.
+#### How to use it ?
+Run `./ft_turing machines/07-example-any.json` with an input on type *a's and b's and c's*
+#### Example
+- `./ft_turing machines/06-back.json aaabbbcccabc` will output `............`
+--
+
 ## Machine 08 : Even
 #### Description :
 This machine checks if the given input has an even number of 0's.
