@@ -1,5 +1,7 @@
 # ft_turing - a [Turing Machine](https://en.wikipedia.org/wiki/Turing_machine) Simulator made in Haskell
 
+###### Disclamer : This project has been made as our first Haskell project, with no theorical nor practical knowledge of the language, we weren't aware of the best practices and the implementation has been made in a really 'naive' way. I might redo this project completely some day - if I'm not too lazy 💤
+
 ## Installing
 #### Needed tools :
 - ghc
