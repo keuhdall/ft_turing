@@ -7,22 +7,24 @@ module Machine.Data (ActionTransition(..), Machine(..)) where
     import Data.Aeson
 
     data ActionTransition = ActionTransition {
-        read::String,
-        to_state::String,
-        write::String,
-        action::String
+        read      :: String,
+        to_state  :: String,
+        write     :: String,
+        action    :: String
     } deriving (Generic, Show)
+
     instance FromJSON ActionTransition
     instance ToJSON ActionTransition
 
     data Machine = Machine {
-        name::String,
-        alphabet::[String],
-        blank::String,
-        states::[String],
-        initial::String,
-        finals::[String],
-        transitions::Map String [ActionTransition]
+        name      :: String,
+        alphabet  :: [String],
+        blank     :: String,
+        states    :: [String],
+        initial   :: String,
+        finals    :: [String],
+        transitions :: Map String [ActionTransition]
     } deriving (Generic, Show)
+
     instance FromJSON Machine
     instance ToJSON Machine

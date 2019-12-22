@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Checker.Checker (isValidMachine, isValidInput) where
     import Prelude hiding (read)
     import Data.Map
@@ -62,17 +64,8 @@ module Checker.Checker (isValidMachine, isValidInput) where
                             | ((hd `member` (transitions m)) && (checkActionTransitions m ((transitions m) ! hd))) = checkTransitions m tl
                             | otherwise = (Nothing, "error at " ++ (show hd))
 
-    isValidInput :: String -> [String] -> String -> Maybe String
-    isValidInput input alphabet blank
-        | isValidInput' input alphabet blank    = Just input
-        | otherwise                             = Nothing
-        where
-            isValidInput' :: String -> [String] -> String -> Bool
-            isValidInput' input alphabet blank = case input of
-                [] -> True
-                (c:s) -> if not (isValidWord [c] alphabet blank) then False else (isValidInput' s alphabet blank)
-
-            isValidWord :: String -> [String] -> String -> Bool
-            isValidWord w alphabet blank
-                | (w == blank)  = False
-                | otherwise     = w `elem` alphabet
+    isValidInput :: String -> Machine -> Maybe String
+    isValidInput input Machine{alphabet,blank}
+      | all (flip elem alphabet) pureInput && all (/=blank) pureInput = Just input
+      | otherwise = Nothing where
+        pureInput = pure <$> input
