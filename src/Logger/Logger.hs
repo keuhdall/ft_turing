@@ -76,12 +76,12 @@ module Logger.Logger (printLine, printHeader, printStep, printUsage) where
     printUsage :: IO ()
     printUsage = do
         name <- getProgName
-        putStrLn $ "usage: " ++ (show name) ++ " [-h] jsonfile input"
-        putStrLn $ ""
-        putStrLn $ "positional arguments:"
-        putStrLn $ "  jsonfile              json description of the machine"
-        putStrLn $ ""
-        putStrLn $ "  input                 input of the machine"
-        putStrLn $ ""
-        putStrLn $ "optional arguments:"
-        putStrLn $ "  -h, --help            show this help message and exit"
+        putStrLn $ "usage: " ++ (show name) ++ " [-h] jsonfile input\
+        \ \n \
+        \ positional arguments:\n \
+        \ jsonfile              json description of the machine\n \
+        \ \n \
+        \ input                 input of the machine\n \
+        \ \n \
+        \ optional arguments: \n \
+        \ -h, --help            show this help message and exit"

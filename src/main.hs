@@ -25,9 +25,6 @@ main = do
   args <- checkArgs =<< getArgs
   s <- fget $ args !! 0
   let input = args !! 1
-  case isValidMachine (decode s :: Maybe Machine) of
-      (Nothing, nok)       -> putStrLn $ "machine invalid: " ++ nok
-      (Just machine, ok) ->
-        case (isValidInput input machine) of
-          Just input   -> run machine input
-          Nothing      -> putStrLn "input invalid"
+  case ((decode s :: Maybe Machine) >>= isValidMachine >>= isValidInput input) of
+    Nothing -> putStrLn "Error : please check machine or input"
+    Just m  -> run m input
