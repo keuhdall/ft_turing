@@ -4,6 +4,5 @@ module Engine.Data (Engine(..)) where
         pos::Int,
         initpos::Int,
         state::String,
-        eaction::String,
         tape::[String]
     } deriving (Show)
