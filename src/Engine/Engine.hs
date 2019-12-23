@@ -8,7 +8,7 @@ module Engine.Engine (run) where
     run :: Machine -> String -> IO ()
     run machine input = do
       let pos = 0 :: Int
-      let engine = Engine 0 0 0 (initial machine) "RIGHT" (makeTape input)
+      let engine = Engine 0 0 0 (initial machine) (makeTape input)
       printHeader machine
       next engine machine
       where
@@ -40,7 +40,6 @@ module Engine.Engine (run) where
                             ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then 0 else x )
                             ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then (initpos engine) + 1 else (initpos engine) )
                             (to_state t)
-                            (action t)
                             (replace (tape engine) (pos engine) (if (write t) == "ANY" then (read t) else (write t)) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
                     )
 
