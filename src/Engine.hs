@@ -1,7 +1,8 @@
-module Engine (Engine(..), run) where
+module Engine (run) where
 
 import Prelude hiding (read)
 import Data.Map hiding (map)
+
 import Types
 import Logger
 
