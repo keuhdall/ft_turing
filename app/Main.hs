@@ -1,12 +1,13 @@
+module Main where
+
 import System.Environment (getArgs)
 import System.Exit (exitSuccess)
 import Data.Aeson
 
-import Machine.Data
-import Engine.Data
-import Engine.Engine
-import Logger.Logger
-import Checker.Checker
+import Types
+import Checker
+import Logger
+import Engine
 
 import qualified Data.ByteString.Lazy as B
 

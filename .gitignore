@@ -1,2 +1,5 @@
 *.o
 *.hi
+.stack_work/
+ft-turing.cabal
+*~

@@ -1,11 +1,9 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Checker.Checker (isValidMachine, isValidInput) where
+module Checker (isValidMachine, isValidInput) where
   import Prelude hiding (read)
   import Data.Map hiding (null,filter)
-  import Machine.Data
-  import Engine.Data
-  import Engine.Engine
+  import Types
 
   isValidMachine :: Machine -> Maybe Machine
   isValidMachine m@Machine{transitions,finals} = if canHalt then checkMachine m else Nothing where

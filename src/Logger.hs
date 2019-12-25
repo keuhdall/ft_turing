@@ -1,12 +1,11 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Logger.Logger (printHeader, printStep, printUsage) where
+module Logger (printHeader, printStep, printUsage) where
   import Prelude hiding (read,write)
   import Data.List (intercalate)
   import Control.Monad (zipWithM_)
   import System.Environment
-  import Machine.Data
-  import Engine.Data
+  import Types
 
   tapeSize :: Int
   tapeSize = 30
