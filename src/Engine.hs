@@ -1,74 +1,71 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Engine (run) where
 
-import Prelude hiding (read)
-import Data.Map hiding (map)
+import Prelude hiding (read, lookup)
+import Data.Map hiding (map, filter, null)
+import Data.List.Split (chunksOf)
 
 import Types
 import Logger
 
+initialState :: Machine -> String -> Engine
+initialState Machine{initial} s = Engine {
+  step    = 0,
+  pos     = 0,
+  initpos = 0,
+  state   = initial,
+  tape    = chunksOf 1 s
+}
+
 run :: Machine -> String -> IO ()
-run m input = do
-  let pos = 0 :: Int
-  let engine = Engine 0 0 0 (initial m) (makeTape input)
+run m@Machine{blank,initial,finals,transitions} input = do
   printHeader m
-  next engine m
+  next $ initialState m input
   where
-    makeTape :: String -> [String]
-    makeTape s = map (\c -> [c]) s
+    next :: Engine -> IO ()
+    next e@Engine{step,pos,initpos,state,tape} = do
+      case (currentWord e >>= extractTransition e) of
+        Nothing -> putStrLn "error, leaving"
+        Just t  -> do
+          printStep e m t
+          case apply e t of
+            Just e' -> next e'
+            Nothing -> putStrLn "program finished"
 
-    next :: Engine -> Machine -> IO ()
-    next engine machine = do
-        let w = currentWord engine
-        let s = state engine
-        let t = extractTransition machine s w
-        --if (step engine) >= 900 then putStrLn "stop" else do
-        case t of
-            Nothing -> putStrLn "error, leaving"
-            Just t -> do
-              printStep engine machine t
-              case (apply t engine machine) of
-                  Just engine' -> next engine' machine
-                  Nothing -> putStrLn "program finished"
-        where
-            apply :: ActionTransition -> Engine -> Machine -> Maybe Engine
-            apply t engine machine
-                | ((to_state t) `elem` (finals machine)) = Nothing
-                | otherwise = Just (
-                    Engine
-                        ((step engine) + 1)
-                        ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then 0 else x )
-                        ( case ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)) of x -> if x < 0 then (initpos engine) + 1 else (initpos engine) )
-                        (to_state t)
-                        (replace (tape engine) (pos engine) (if (write t) == "ANY" then (read t) else (write t)) (blank machine) ((pos engine) + (if (action t) == "RIGHT" then (1) else -1)))
-                )
+    apply :: Engine -> ActionTransition -> Maybe Engine
+    apply e@Engine{step,pos,initpos,tape} ActionTransition{read,write,to_state,action}
+      | to_state `elem` finals  = Nothing
+      | otherwise = Just Engine {
+        step    = step + 1,
+        pos     = if newPos < 0 then 0 else newPos,
+        initpos = if newPos < 0 then initpos + 1 else initpos,
+        state   = to_state,
+        tape    = replace e (if write == "ANY" then read else write) newPos
+      } where
+        nextPos = if action == "RIGHT" then 1 else -1
+        newPos = pos + nextPos
 
-            replace :: [String] -> Int -> String -> String -> Int -> [String]
-            replace tape pos w blank npos
-                | (npos < 0)    = replace' (blank:tape) 0   (pos + 1)   w blank
-                | otherwise     = replace' tape         0   pos         w blank
-                where
-                replace' :: [String] -> Int -> Int -> String -> String -> [String]
-                replace' tape i pos w blank =
-                    case tape of
-                        (c:s) -> (if i == pos then w else c):(replace' s (i+1) pos w blank)
-                        [] -> if pos == i-1 then [blank] else []
+    replace :: Engine -> String -> Int -> [String]
+    replace Engine{tape,pos} w newpos = checkTape <$> zip filledTape [0..] where
+      checkTape (a,b) = if b == pos then w else a
+      filledTape = let x = abs $ newpos + 1 in if newpos < 0 then ([0..x] >> blank):tape else tape
 
-            currentWord :: Engine -> Maybe String
-            currentWord engine = if (pos engine) < 0 then Nothing else Just ( (tape engine) !! (pos engine) )
+    currentWord :: Engine -> Maybe String
+    currentWord Engine{pos,tape} = if pos < 0 then Nothing else Just $ tape !! pos
 
-            -- Might be moved to Machine.Machine
-            extractTransition :: Machine -> String -> Maybe String -> Maybe ActionTransition
-            extractTransition machine s w =
-                case w of
-                    Nothing -> Nothing
-                    Just w ->
-                        case (Data.Map.lookup s (transitions machine)) of
-                            Just ts -> findTransition w ts 0 (-1) ts
-                            Nothing -> Nothing
-                where
-                    findTransition :: String -> [ActionTransition] -> Int -> Int -> [ActionTransition] -> Maybe ActionTransition
-                    findTransition w ts i posAny x = case ts of
-                        (t:nts) -> if (read t) == w then Just t else (findTransition w nts (i+1) (if ( (posAny == -1) && ((read t) == "ANY") ) then i else posAny) x )
-                        []      -> if (posAny == (-1)) then Nothing else Just ( anyTransition w (x !! posAny) ) where
-            anyTransition :: String -> ActionTransition -> ActionTransition
-            anyTransition w t = ActionTransition w (to_state t) (write t) (action t)
+    extractTransition :: Engine -> String -> Maybe ActionTransition
+    extractTransition Engine{state} w = case (lookup state transitions) of
+      Just ts -> findTransition w ts 0 (-1) ts
+      Nothing -> Nothing
+      where
+        findTransition :: String -> [ActionTransition] -> Int -> Int -> [ActionTransition] -> Maybe ActionTransition
+        findTransition w ts i posAny x = case ts of
+          (t:nts) ->
+            if read t == w then Just t
+            else findTransition w nts (i+1) (if posAny == -1 && (read t) == "ANY" then i else posAny) x
+          []      ->
+            if posAny == -1 then Nothing
+            else Just $ buildTransition w (x !! posAny) where
+            buildTransition :: String -> ActionTransition -> ActionTransition
+            buildTransition s ActionTransition{to_state,write,action} = ActionTransition s to_state write action

@@ -16,12 +16,12 @@ data ActionTransition = ActionTransition {
 } deriving (Generic, Show, FromJSON, ToJSON)
 
 data Machine = Machine {
-  name      :: String,
-  states    :: [String],
-  alphabet  :: [String],
-  blank     :: String,
-  initial   :: String,
-  finals    :: [String],
+  name        :: String,
+  states      :: [String],
+  alphabet    :: [String],
+  blank       :: String,
+  initial     :: String,
+  finals      :: [String],
   transitions :: Map String [ActionTransition]
 } deriving (Generic, Show, FromJSON, ToJSON)
 
