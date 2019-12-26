@@ -19,10 +19,10 @@ printHeader Machine{name,alphabet,states,initial,finals} = do
   mapM_ printName [0..80]
   putStrLn $ "*                                                                              *\n\
   \********************************************************************************\n\
-  \Alphabet: " ++ "[" ++ (intercalate ", " alphabet) ++ "]\n\
-  \States: " ++ "[" ++ (intercalate ", " states) ++ "]\n\
-  \Initial: " ++ initial ++ "\n\
-  \Finals: " ++ "[" ++ (intercalate ", " finals) ++ "]\n\
+  \Alphabet: "  ++ "[" ++ (intercalate ", " alphabet) ++ "]\n\
+  \States: "    ++ "[" ++ (intercalate ", " states)   ++ "]\n\
+  \Initial: "   ++ initial ++ "\n\
+  \Finals: "    ++ "[" ++ (intercalate ", " finals)   ++ "]\n\
   \********************************************************************************" where
     printName n
       | n == ((80 - length name) `quot` 2)  = putStr name

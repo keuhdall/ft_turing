@@ -10,8 +10,8 @@ import Data.Aeson
 
 data ActionTransition = ActionTransition {
   read      :: String,
-  to_state  :: String,
   write     :: String,
+  to_state  :: String,
   action    :: String
 } deriving (Generic, Show, FromJSON, ToJSON)
 
