@@ -2,7 +2,7 @@
 
 module Logger (printHeader, printStep, printUsage) where
 
-import Prelude hiding (read,write)
+import Prelude hiding (read)
 import Data.List (intercalate)
 import Control.Monad (zipWithM_)
 import System.Environment (getProgName)
@@ -12,6 +12,7 @@ import Types
 tapeSize :: Int
 tapeSize = 30
 
+--TODO: use printf
 printHeader :: Machine -> IO ()
 printHeader Machine{name,alphabet,states,initial,finals} = do
   putStrLn $ "********************************************************************************\n\
@@ -23,12 +24,15 @@ printHeader Machine{name,alphabet,states,initial,finals} = do
   \States: "    ++ "[" ++ (intercalate ", " states)   ++ "]\n\
   \Initial: "   ++ initial ++ "\n\
   \Finals: "    ++ "[" ++ (intercalate ", " finals)   ++ "]\n\
-  \********************************************************************************" where
+  \********************************************************************************"
+  where
     printName n
-      | n == ((80 - length name) `quot` 2)  = putStr name
-      | n == 0 || n == (80 - length name)   = putStr "*"
+      | n == trailForName `quot` 2  = putStr name
+      | n == 0 || n == trailForName = putStr "*"
       | n == 80   = putStr "\n"
       | otherwise = putStr " "
+      where
+        trailForName = 80 - length name
 
 trail :: Int -> String -> String
 trail n s = if n <= 0 then s else s ++ ([0..n-1] >> " ")
@@ -36,7 +40,8 @@ trail n s = if n <= 0 then s else s ++ ([0..n-1] >> " ")
 printStep :: Engine -> Machine -> ActionTransition -> IO ()
 printStep Engine{step,pos,initpos,state,tape} Machine{blank} ActionTransition{read,write,to_state,action} = do
   (putStr . trail 2 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
-  putStr $ " (\'" ++ read ++ "\', "++ state ++") -> ( \'" ++ write ++ "\', "++ to_state ++ ", "++ action ++")\n" where
+  putStr $ " (\'" ++ read ++ "\', "++ state ++") -> ( \'" ++ write ++ "\', "++ to_state ++ ", "++ action ++")\n"
+  where
     adjustTape :: [String] -> [String]
     adjustTape xs = let size = length xs in if size < tapeSize then xs ++ ([0..(tapeSize-size)] >> [blank]) else xs
 

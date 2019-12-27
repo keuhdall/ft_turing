@@ -3,7 +3,6 @@
 
 module Types where
 
-import qualified Data.ByteString.Lazy as B
 import GHC.Generics
 import Data.Map
 import Data.Aeson
