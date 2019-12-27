@@ -37,6 +37,8 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -Wextra
     dependencies:
     - ft-turing
     - aeson

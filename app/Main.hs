@@ -11,7 +11,6 @@ import Engine
 
 import qualified Data.ByteString.Lazy as B
 
-fget = B.readFile
 
 checkArgs :: [String] -> IO [String]
 checkArgs xs
@@ -24,7 +23,7 @@ checkArgs xs
 main :: IO ()
 main = do
   args <- checkArgs =<< getArgs
-  s <- fget $ args !! 0
+  s <- B.readFile $ args !! 0
   let input = args !! 1
   case ((decode s :: Maybe Machine) >>= isValidMachine >>= isValidInput input) of
     Nothing -> putStrLn "Error : please check machine or input"
