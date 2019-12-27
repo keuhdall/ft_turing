@@ -35,15 +35,15 @@ printHeader Machine{name,alphabet,states,initial,finals} = do
         trailForName = 80 - length name
 
 trail :: Int -> String -> String
-trail n s = if n <= 0 then s else s ++ ([0..n-1] >> " ")
+trail n s = if length s < n then s ++ ([0..n-length s] >> " ") else s
 
 printStep :: Engine -> Machine -> ActionTransition -> IO ()
 printStep Engine{step,pos,initpos,state,tape} Machine{blank} ActionTransition{read,write,to_state,action} = do
-  (putStr . trail 2 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
+  (putStr . trail 3 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
   putStr $ " (\'" ++ read ++ "\', "++ state ++") -> ( \'" ++ write ++ "\', "++ to_state ++ ", "++ action ++")\n"
   where
     adjustTape :: [String] -> [String]
-    adjustTape xs = let size = length xs in if size < tapeSize then xs ++ ([0..(tapeSize-size)] >> [blank]) else xs
+    adjustTape xs = let size = length xs in if size < tapeSize then xs ++ ([0..tapeSize-size] >> [blank]) else xs
 
     printTape :: String -> Int -> IO ()
     printTape s n
