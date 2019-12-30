@@ -37,8 +37,8 @@ run m@Machine{..} input = do
         next e'
       Nothing -> putStrLn "program finished"
 
-    apply :: Engine -> ActionTransition -> Maybe (Engine,ActionTransition)
-    apply e@Engine{step,pos,initpos} t@ActionTransition{..}
+    apply :: Engine -> Transition -> Maybe (Engine,Transition)
+    apply e@Engine{step,pos,initpos} t@Transition{..}
       | to_state `elem` finals  = Nothing
       | otherwise = Just (Engine {
         step    = step + 1,
@@ -55,12 +55,12 @@ run m@Machine{..} input = do
       checkTape (a,b) = if b == pos then w else a
       filledTape = let x = abs $ newpos + 1 in if newpos < 0 then ([0..x] >> blank):tape else tape
 
-    extractTransition :: Engine -> String -> Maybe ActionTransition
+    extractTransition :: Engine -> String -> Maybe Transition
     extractTransition Engine{state} w = case lookup state transitions of
       Just ts -> findTransition w ts 0 (-1) ts
       Nothing -> Nothing
       where
-        findTransition :: String -> [ActionTransition] -> Int -> Int -> [ActionTransition] -> Maybe ActionTransition
+        findTransition :: String -> [Transition] -> Int -> Int -> [Transition] -> Maybe Transition
         findTransition w' ts i posAny x = case ts of
           (t:nts) ->
             if read t == w' then Just t
@@ -68,5 +68,5 @@ run m@Machine{..} input = do
           []      ->
             if posAny == -1 then Nothing
             else Just $ buildTransition w' (x !! posAny) where
-            buildTransition :: String -> ActionTransition -> ActionTransition
-            buildTransition s ActionTransition{to_state,write,action} = ActionTransition s to_state write action
+            buildTransition :: String -> Transition -> Transition
+            buildTransition s Transition{to_state,write,action} = Transition s to_state write action

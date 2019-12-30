@@ -1,4 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Logger (printHeader, printStep, printUsage) where
 
@@ -14,7 +15,7 @@ tapeSize = 30
 
 --TODO: use printf
 printHeader :: Machine -> IO ()
-printHeader Machine{name,alphabet,states,initial,finals} = do
+printHeader Machine{..} = do
   putStrLn "********************************************************************************\n\
   \*                                                                              *"
   mapM_ printName [0..80]
@@ -37,8 +38,8 @@ printHeader Machine{name,alphabet,states,initial,finals} = do
 trail :: Int -> String -> String
 trail n s = if length s < n then s ++ ([0..n-length s] >> " ") else s
 
-printStep :: Engine -> Machine -> ActionTransition -> IO ()
-printStep Engine{step,pos,initpos,state,tape} Machine{blank} ActionTransition{read,write,to_state,action} = do
+printStep :: Engine -> Machine -> Transition -> IO ()
+printStep Engine{..} Machine{blank} Transition{..} = do
   (putStr . trail 3 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
   putStr $ " (\'" ++ read ++ "\', "++ state ++") -> ( \'" ++ write ++ "\', "++ to_state ++ ", "++ action ++")\n"
   where

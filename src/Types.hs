@@ -7,7 +7,7 @@ import GHC.Generics
 import Data.Map
 import Data.Aeson
 
-data ActionTransition = ActionTransition {
+data Transition = Transition {
   read      :: String,
   write     :: String,
   to_state  :: String,
@@ -21,7 +21,7 @@ data Machine = Machine {
   blank       :: String,
   initial     :: String,
   finals      :: [String],
-  transitions :: Map String [ActionTransition]
+  transitions :: Map String [Transition]
 } deriving (Generic, Show, FromJSON, ToJSON)
 
 data Engine = Engine {
