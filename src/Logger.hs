@@ -15,15 +15,15 @@ tapeSize = 30
 --TODO: use printf
 printHeader :: Machine -> IO ()
 printHeader Machine{name,alphabet,states,initial,finals} = do
-  putStrLn $ "********************************************************************************\n\
+  putStrLn "********************************************************************************\n\
   \*                                                                              *"
   mapM_ printName [0..80]
   putStrLn $ "*                                                                              *\n\
   \********************************************************************************\n\
-  \Alphabet: "  ++ "[" ++ (intercalate ", " alphabet) ++ "]\n\
-  \States: "    ++ "[" ++ (intercalate ", " states)   ++ "]\n\
+  \Alphabet: "  ++ "[" ++ intercalate ", " alphabet ++ "]\n\
+  \States: "    ++ "[" ++ intercalate ", " states   ++ "]\n\
   \Initial: "   ++ initial ++ "\n\
-  \Finals: "    ++ "[" ++ (intercalate ", " finals)   ++ "]\n\
+  \Finals: "    ++ "[" ++ intercalate ", " finals   ++ "]\n\
   \********************************************************************************"
   where
     printName n

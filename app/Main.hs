@@ -25,6 +25,6 @@ main = do
   args <- checkArgs =<< getArgs
   s <- B.readFile $ args !! 0
   let input = args !! 1
-  case ((decode s :: Maybe Machine) >>= isValidMachine >>= isValidInput input) of
+  case (decode s :: Maybe Machine) >>= isValidMachine >>= isValidInput input of
     Nothing -> putStrLn "Error : please check machine or input"
     Just m  -> run m input

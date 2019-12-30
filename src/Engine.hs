@@ -1,9 +1,10 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Engine (run) where
 
 import Prelude hiding (read, lookup)
-import Data.Map hiding (map, filter, null)
+import Data.Map hiding (map, filter, null, (!?))
 import Data.List.Split (chunksOf)
 
 import Types
@@ -18,23 +19,26 @@ initialState Machine{initial} s = Engine {
   tape    = chunksOf 1 s
 }
 
+(!?) :: [a] -> Int -> Maybe a
+(!?) a b = if b < 0 || b >= length a then Nothing else Just $ a !! b
+
 currentWord :: Engine -> Maybe String
-currentWord Engine{pos,tape} = if pos < 0 then Nothing else Just $ tape !! pos
+currentWord Engine{pos,tape} = if pos < 0 then Nothing else tape !? pos
 
 run :: Machine -> String -> IO ()
-run m@Machine{blank,finals,transitions} input = do
+run m@Machine{..} input = do
   printHeader m
   next $ initialState m input
   where
     next :: Engine -> IO ()
-    next e = case (currentWord e >>= extractTransition e >>= apply e) of
+    next e = case currentWord e >>= extractTransition e >>= apply e of
       Just (e', t) -> do
         printStep e m t
         next e'
       Nothing -> putStrLn "program finished"
 
     apply :: Engine -> ActionTransition -> Maybe (Engine,ActionTransition)
-    apply e@Engine{step,pos,initpos} t@ActionTransition{read,write,to_state,action}
+    apply e@Engine{step,pos,initpos} t@ActionTransition{..}
       | to_state `elem` finals  = Nothing
       | otherwise = Just (Engine {
         step    = step + 1,
@@ -52,7 +56,7 @@ run m@Machine{blank,finals,transitions} input = do
       filledTape = let x = abs $ newpos + 1 in if newpos < 0 then ([0..x] >> blank):tape else tape
 
     extractTransition :: Engine -> String -> Maybe ActionTransition
-    extractTransition Engine{state} w = case (lookup state transitions) of
+    extractTransition Engine{state} w = case lookup state transitions of
       Just ts -> findTransition w ts 0 (-1) ts
       Nothing -> Nothing
       where
@@ -60,7 +64,7 @@ run m@Machine{blank,finals,transitions} input = do
         findTransition w' ts i posAny x = case ts of
           (t:nts) ->
             if read t == w' then Just t
-            else findTransition w' nts (i+1) (if posAny == -1 && (read t) == "ANY" then i else posAny) x
+            else findTransition w' nts (i+1) (if posAny == -1 && read t == "ANY" then i else posAny) x
           []      ->
             if posAny == -1 then Nothing
             else Just $ buildTransition w' (x !! posAny) where
