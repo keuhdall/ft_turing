@@ -99,7 +99,7 @@ STATE : HALT
 
 ## Stuff to improve
 
-Well, basically everything. This was my first Haskell project ever and it kind sucks. I tried to rework everything, but this project was made 2 years ago and it's quite hard to wrap my head around some parts. Also, I wasn't really paying attention to stuff like Monads, so the project architecture isn't great either. Nevertheless, I still can see some short-term improvements, like :
+Well, basically everything. This was my first Haskell project ever and it kinda sucks. I tried to rework everything, but this project was made 2 years ago and it's quite hard to wrap my head around some parts. Also, I wasn't really paying attention to stuff like Monads, so the project architecture isn't great either. Nevertheless, I still can see some short-term improvements, like :
 
 - Using the [Lens](https://github.com/ekmett/lens/) library to manipulate records and get rid of `NamedFieldPuns` and `RecordWildCards`
 - Replace `Maybe` Monads by `Either` in Engine module, in order to get better error handling
