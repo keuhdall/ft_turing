@@ -1,41 +1,40 @@
 # ft_turing - a [Turing Machine](https://en.wikipedia.org/wiki/Turing_machine) Simulator made in Haskell
 
-###### Disclamer : This project has been made as our first Haskell project, with no theorical nor practical knowledge of the language, we weren't aware of the best practices and the implementation has been made in a really 'naive' way. I might redo this project completely some day - if I'm not too lazy 💤
+###### Disclaimer : This is the 'v2' of my first Haskell project, but I kept the same foundations, the architecture (even the code itself actually) aren't that great.
 
 ## Installing
 #### Needed tools :
-- ghc
-- cabal
-
-#### Needed dependencies :
-- aeson
-> To install aeson, simply run `cabal install aeson`
+- [Haskell](https://www.haskell.org/platform/)
+- [Stack](https://docs.haskellstack.org/en/stable/install_and_upgrade/)
 
 ## Usage
-Compile the program using `make`
-Run the program using one of the Turing Machines plus an input.
-> Example : `./ft_turing 02-palindrome.json 11100111`
+Compile the program using `stack build`
+Run the program using one of the Turing Machines plus an input. You can either use stack like so :
+> Example : `stack run machines/02-palindrome.json 11100111`
+
+Or directly execute the binary like so :
+> Example : `./.stack_work/dist/(...)/build/ft-turing-exe/ft-turing-exe machines/02-palindrome.json 11100111`
 
 ## Understanding a simple Turing Machine : the unary addition
 An unary addition is basically making sum of characters.
 > Example : `111 + 11` would give `11111`
 
 #### Setting up the rules of the machine
-Im this example, the alphabet of the input will be composed of 3 characters :
+In this example, the alphabet of the input will be composed of 3 characters :
 - `1` as character we want to add
 - `+` as sign for the addition
 - `=` as sign to give us the value of the operation
 - `.` as a blank character (that can not be given in the input of the machine)
 
-We now need to define behavior of the machine for each character read, for this, we will define 2 states :
-- We will call these states *Scan right* and *Add one*.
+We now need to define the behavior of the machine for each character read, for this, we will define 2 states :
+- We will call these states **Scan right** and **Add one**.
 - The initial state of the machine will be *Scan right*.
 - The machine will stop on the state **HALT**.
 
 The rule of these states can be described as below :
 
 
-##### Scan right :
+#### Scan right :
 | Read | Write | To state | Action |
 | ---- | ----- | -------- | ------ |
 | `.`  |  `.`  |Scan right| RIGHT  |
@@ -43,7 +42,7 @@ The rule of these states can be described as below :
 | `+`  |  `.`  |Add one   | RIGHT  |
 | `=`  |  `.`  |**HALT**  | LEFT   |
 
-##### Add one :
+#### Add one :
 | Read | Write | To state | Action |
 | ---- | ----- | -------- | ------ |
 | `1`  | `+`   |Add one   |  LEFT  |
@@ -89,11 +88,19 @@ STATE : SCAN RIGHT
 | 1 | 1 | . | = |
               ^
 ```
-The machine reads the character `=` in state *Scan right*, it is replaced by a '.', the head moves to LEFT, the machines switchs to the state **HALT** and stops.
+The machine reads the character `=` in state *Scan right*, it is replaced by a '.', the head moves to LEFT, the machines switches to the state **HALT** and stops.
 
-###### Final state :
+##### Final state :
 ```
 STATE : HALT
 | 1 | 1 | . | . |
           ^
 ```
+
+## Stuff to improve
+
+Well, basically everything. This was my first Haskell project ever and it kinda sucks. I tried to rework everything, but this project was made 2 years ago and it's quite hard to wrap my head around some parts. Also, I wasn't really paying attention to stuff like Monads, so the project architecture isn't great either. Nevertheless, I still can see some short-term improvements, like :
+
+- Using the [Lens](https://github.com/ekmett/lens/) library to manipulate records and get rid of `NamedFieldPuns` and `RecordWildCards`
+- Replace `Maybe` Monads by `Either` in Engine module, in order to get better error handling
+- Probably rethink data structures

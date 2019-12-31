@@ -1,2 +1,9 @@
 *.o
 *.hi
+*.iml
+.stack-work/
+.idea/
+.vscode/
+out/
+ft-turing.cabal
+*~
