@@ -56,17 +56,16 @@ run m@Machine{..} input = do
       filledTape = let x = abs $ newpos + 1 in if newpos < 0 then ([0..x] >> blank):tape else tape
 
     extractTransition :: Engine -> String -> Maybe Transition
-    extractTransition Engine{state} w = case lookup state transitions of
-      Just ts -> findTransition w ts 0 (-1) ts
-      Nothing -> Nothing
-      where
-        findTransition :: String -> [Transition] -> Int -> Int -> [Transition] -> Maybe Transition
-        findTransition w' ts i posAny x = case ts of
-          (t:nts) ->
-            if read t == w' then Just t
-            else findTransition w' nts (i+1) (if posAny == -1 && read t == "ANY" then i else posAny) x
-          []      ->
-            if posAny == -1 then Nothing
-            else Just $ buildTransition w' (x !! posAny) where
-            buildTransition :: String -> Transition -> Transition
-            buildTransition s Transition{to_state,write,action} = Transition s to_state write action
+    extractTransition Engine{state} w = t >>= \t' -> findTransition (-1) $ zip t' [0..] where
+      t = lookup state transitions
+      findTransition :: Int -> [(Transition, Int)] -> Maybe Transition
+      findTransition pos t' = case t' of
+        ((a,b):xs)  -> if read a == w then Just a else findTransition (if pos == -1 && read a == "ANY" then b else pos) xs
+        []          -> if pos == -1 then Nothing else t >>= buildTransition w pos
+      buildTransition :: String -> Int -> [Transition] -> Maybe Transition
+      buildTransition s n t = Just Transition {
+        read      = s,
+        write     = write $ t !! n,
+        to_state  = to_state $ t !! n,
+        action    = action $ t !! n
+      }
