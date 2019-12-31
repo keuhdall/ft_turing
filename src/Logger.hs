@@ -6,6 +6,7 @@ module Logger (printHeader, printStep, printUsage) where
 import Prelude hiding (read)
 import Data.List (intercalate)
 import Control.Monad (zipWithM_)
+import Text.Printf (printf)
 import System.Environment (getProgName)
 
 import Types
@@ -13,7 +14,6 @@ import Types
 tapeSize :: Int
 tapeSize = 30
 
---TODO: use printf
 printHeader :: Machine -> IO ()
 printHeader Machine{..} = do
   putStrLn "********************************************************************************\n\
@@ -41,7 +41,7 @@ trail n s = if length s < n then s ++ ([0..n-length s] >> " ") else s
 printStep :: Engine -> Machine -> Transition -> IO ()
 printStep Engine{..} Machine{blank} Transition{..} = do
   (putStr . trail 3 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
-  putStr $ " (\'" ++ read ++ "\', "++ state ++") -> ( \'" ++ write ++ "\', "++ to_state ++ ", "++ action ++")\n"
+  printf " ('%s', %s) -> ('%s', %s, %s)\n" read state write to_state action
   where
     adjustTape :: [String] -> [String]
     adjustTape xs = let size = length xs in if size < tapeSize then xs ++ ([0..tapeSize-size] >> [blank]) else xs
