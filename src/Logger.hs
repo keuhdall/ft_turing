@@ -12,7 +12,7 @@ import System.Environment (getProgName)
 import Types
 
 tapeSize :: Int
-tapeSize = 30
+tapeSize = 29
 
 printHeader :: Machine -> IO ()
 printHeader Machine{..} = do
@@ -40,7 +40,7 @@ trail n s = if length s < n then s ++ ([0..n-length s] >> " ") else s
 
 printStep :: Engine -> Machine -> Transition -> IO ()
 printStep Engine{..} Machine{blank} Transition{..} = do
-  (putStr . trail 3 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..tapeSize] >> putStr "]"
+  (putStr . trail 2 . show) step >> putStr "[" >> zipWithM_ printTape (adjustTape tape) [0..] >> putStr "]"
   printf " ('%s', %s) -> ('%s', %s, %s)\n" read state write to_state action
   where
     adjustTape :: [String] -> [String]
