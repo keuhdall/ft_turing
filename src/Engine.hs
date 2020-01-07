@@ -32,9 +32,7 @@ run m@Machine{..} input = do
   where
     next :: Engine -> IO ()
     next e = case currentWord e >>= extractTransition e >>= apply e of
-      Just (e', t) -> do
-        printStep e m t
-        next e'
+      Just (e', t) -> printStep e m t >> next e'
       Nothing -> putStrLn "program finished"
 
     apply :: Engine -> Transition -> Maybe (Engine,Transition)
