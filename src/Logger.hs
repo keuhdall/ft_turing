@@ -36,7 +36,7 @@ printHeader Machine{..} = do
         trailForName = 80 - length name
 
 trail :: Int -> String -> String
-trail n s = if length s < n then s ++ ([0..n-length s] >> " ") else s
+trail n s = if length s < n+1 then s ++ ([0..n-length s] >> " ") else s
 
 printStep :: Engine -> Machine -> Transition -> IO ()
 printStep Engine{..} Machine{blank} Transition{..} = do

@@ -47,8 +47,7 @@ run m@Machine{..} input = do
         state   = to_state,
         tape    = replace e (if write == "ANY" then read else write) newPos
       }, t) where
-        nextPos = if action == "RIGHT" then 1 else -1
-        newPos = pos + nextPos
+        newPos = pos + if action == "RIGHT" then 1 else -1
 
     replace :: Engine -> String -> Int -> [String]
     replace Engine{tape,pos} w newpos = checkTape <$> zip filledTape [0..] where
@@ -60,12 +59,5 @@ run m@Machine{..} input = do
       t = lookup state transitions
       findTransition :: Int -> [(Transition, Int)] -> Maybe Transition
       findTransition pos t' = case t' of
-        ((a,b):xs)  -> if read a == w then Just a else findTransition (if pos == -1 && read a == "ANY" then b else pos) xs
-        []          -> if pos == -1 then Nothing else t >>= buildTransition w pos
-      buildTransition :: String -> Int -> [Transition] -> Maybe Transition
-      buildTransition s n t = Just Transition {
-        read      = s,
-        write     = write $ t !! n,
-        to_state  = to_state $ t !! n,
-        action    = action $ t !! n
-      }
+        (a,b):xs  -> if read a == w then Just a else findTransition (if pos == -1 && read a == "ANY" then b else pos) xs
+        []        -> if pos == -1 then Nothing else t >>= \t'' -> Just (t'' !! pos) {read = w}
