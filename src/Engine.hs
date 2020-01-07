@@ -23,7 +23,7 @@ initialState Machine{initial} s = Engine {
 (!?) a b = if b < 0 || b >= length a then Nothing else Just $ a !! b
 
 currentWord :: Engine -> Maybe String
-currentWord Engine{pos,tape} = if pos < 0 then Nothing else tape !? pos
+currentWord Engine{pos,tape} = tape !? pos
 
 run :: Machine -> String -> IO ()
 run m@Machine{..} input = do
