@@ -104,3 +104,4 @@ Well, basically everything. This was my first Haskell project ever and it kinda 
 - Using the [Lens](https://github.com/ekmett/lens/) library to manipulate records and get rid of `NamedFieldPuns` and `RecordWildCards`
 - Replace `Maybe` Monads by `Either` in Engine module, in order to get better error handling
 - Probably rethink data structures
+- `apply` function in the `Engine` module should have a different signature as `Maybe (Engine,Transition)` does not allow to recover and print the final state of the machine when doing the pattern matching line 35 and 36 (bad design here).
