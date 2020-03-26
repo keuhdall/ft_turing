@@ -1,6 +1,6 @@
 # ft_turing - a [Turing Machine](https://en.wikipedia.org/wiki/Turing_machine) Simulator made in Haskell
 
-###### Disclaimer : This is the 'v2' of my first Haskell project, but I kept the same foundations, the architecture (even the code itself actually) aren't that great.
+###### Disclaimer : This is the 'v2' of my first Haskell project, but I kept the same foundations, the architecture (even the code itself actually) aren't that great. But I guess this is still a pretty good improvement, knowing that the finished code initially looked like [THIS](https://github.com/keuhdall/ft_turing/tree/d9ee22f9dbbcdbadc5db29726f2756fdde7500c6) (I'm so sorry for you if you actually clicked and browsed the files).
 
 ## Installing
 #### Needed tools :
